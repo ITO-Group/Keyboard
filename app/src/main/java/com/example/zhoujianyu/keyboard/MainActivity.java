@@ -13,11 +13,11 @@ public class MainActivity extends AppCompatActivity {
     static {
         System.loadLibrary("native-lib");
     }
-    String alpha_map[]=new String[]{""," ","q","a","z","w","s","x","e","d","c","r","f","v","t","g","b","y","h","n","u","j","m","i","k","del","o","l","p","enter"};
+    String alpha_map[]=new String[]{""," ","q","a","z","w","s","x","e","d","c","r","f","v","t","g","b","y","h","n","u","j","m","i","k","del","o","l","p","enter","",""};
     TextView textView;
-    public static final int ROW_NUM = 31;
+    public static final int ROW_NUM = 30;
     public static final int COL_NUM = 16;
-    public static final int PRESS_THR = 150;
+    public static final int PRESS_THR =80;
     public int screenWidth;
     public int screenHeight;
     public int capaWidth;
@@ -66,8 +66,9 @@ public class MainActivity extends AppCompatActivity {
                     max_row = i;
                 }
             }
-            if(max>PRESS_THR) {
-//                Log.e("bug",Integer.toString(max));
+            Log.e("bug",Integer.toString(max)+","+Integer.toString(max_row));
+            if(max>PRESS_THR && max_row<29 && max_row>0) {
+                if(max_row==26 && max<800) return -1;
                 return max_row;
             }
             else return -1;
@@ -89,7 +90,10 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     String text = textView.getText().toString();
-                    text += alpha_map[key];
+                    if(alpha_map[key].equals("del")){
+                        if(text.length()>0) text = text.substring(0,text.length()-1);
+                    }
+                    else text += alpha_map[key];
                     textView.setText(text);
                 }
             });
