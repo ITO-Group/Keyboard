@@ -1,6 +1,7 @@
 package com.example.zhoujianyu.keyboard;
 
 import android.graphics.Point;
+import android.icu.util.Calendar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -17,7 +18,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     public static final int ROW_NUM = 30;
     public static final int COL_NUM = 16;
-    public static final int PRESS_THR =80;
+    public static final int PRESS_THR =40;
+    public static final int PRESS_INTERVAL = 200;
     public int screenWidth;
     public int screenHeight;
     public int capaWidth;
@@ -26,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     public int capacity_data2[][] = new int[ROW_NUM][COL_NUM];
     public int diff_data[][] = new int[ROW_NUM][COL_NUM];
     boolean first = true;
+    long last_time = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,8 +70,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             Log.e("bug",Integer.toString(max)+","+Integer.toString(max_row));
-            if(max>PRESS_THR && max_row<29 && max_row>0) {
-                if(max_row==26 && max<800) return -1;
+             if(max>PRESS_THR && max_row<30 && max_row>0) {
                 return max_row;
             }
             else return -1;
@@ -84,16 +86,24 @@ public class MainActivity extends AppCompatActivity {
     public void processDiff(short[] data) throws InterruptedException{
         updateCapacity(data);
         final int key = keyboardAnalyze();
-        if(key!=-1){
+        long time_interval = System.currentTimeMillis()-last_time;
+        if(key!=-1&&time_interval>PRESS_INTERVAL){
+            last_time = System.currentTimeMillis();
             Log.e("bug",alpha_map[key]);
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     String text = textView.getText().toString();
-                    if(alpha_map[key].equals("del")){
-                        if(text.length()>0) text = text.substring(0,text.length()-1);
+                    if(alpha_map[key].equals("del")||alpha_map[key].equals("k")){
+//                        if(text.length()>0) text = text.substring(0,text.length()-1);
+                        text =  "";
                     }
-                    else text += alpha_map[key];
+                    else{
+                        if(!alpha_map[key].equals("x")){
+                            text += alpha_map[key];
+                        }
+                    }
+                    textView.setTextSize(70);
                     textView.setText(text);
                 }
             });
