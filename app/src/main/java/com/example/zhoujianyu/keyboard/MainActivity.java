@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     public static final int ROW_NUM = 30;
     public static final int COL_NUM = 16;
-    public static final int PRESS_THR =40;
+    public static final int PRESS_THR =100;
     public static final int PRESS_INTERVAL = 200;
     public int screenWidth;
     public int screenHeight;
@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         textView = findViewById(R.id.sample_text);
         init();
@@ -70,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             Log.e("bug",Integer.toString(max)+","+Integer.toString(max_row));
-             if(max>PRESS_THR && max_row<30 && max_row>0) {
+             if(max>PRESS_THR && max_row<30 && max_row>=0) {
                 return max_row;
             }
             else return -1;
@@ -94,14 +95,14 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void run() {
                     String text = textView.getText().toString();
-                    if(alpha_map[key].equals("del")||alpha_map[key].equals("k")){
-//                        if(text.length()>0) text = text.substring(0,text.length()-1);
+                    if(alpha_map[key].equals("del")){
+                        if(text.length()>0) text = text.substring(0,text.length()-1);
                         text =  "";
                     }
                     else{
-                        if(!alpha_map[key].equals("x")){
-                            text += alpha_map[key];
-                        }
+//                        if(!alpha_map[key].equals("x")){
+//                        }
+                        text += alpha_map[key];
                     }
                     textView.setTextSize(70);
                     textView.setText(text);
